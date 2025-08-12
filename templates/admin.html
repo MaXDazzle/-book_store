@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ-панель</title>
+</head>
+<body>
+    <h1>Админ-панель</h1>
+    <p><a href="{{ url_for('index') }}">На главную</a></p>
+
+    <h2>Добавить книгу</h2>
+    <form method="post">
+        <input type="text" name="title" placeholder="Название" required><br>
+        <input type="text" name="author" placeholder="Автор" required><br>
+        <input type="text" name="category" placeholder="Категория" required><br>
+        <input type="number" name="year" placeholder="Год" required><br>
+        <input type="number" name="price" placeholder="Цена" required><br>
+        <button type="submit">Добавить</button>
+    </form>
+
+    <h2>Список книг</h2>
+    <ul>
+    {% for book in books %}
+        <li>{{ book[1] }} — {{ book[2] }} — {{ book[3] }} — {{ book[4] }} — {{ book[5] }} руб. — {{ book[6] }}</li>
+    {% endfor %}
+    </ul>
+
+    <h2>Напоминания об аренде</h2>
+    {% if reminders %}
+        <ul>
+        {% for r in reminders %}
+            <li>{{ r[1] }} арендовал "{{ r[2] }}", срок истекает {{ r[3] }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет напоминаний.</p>
+    {% endif %}
+</body>
+</html>
