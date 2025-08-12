@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Книжный магазин</title>
+</head>
+<body>
+    <h1>Список книг</h1>
+    {% if session.username %}
+        <p>Вы вошли как {{ session.username }} ({{ session.role }})</p>
+    {% endif %}
+    <ul>
+    {% for book in books %}
+        <li>{{ book[1] }} — {{ book[2] }} ({{ book[3] }}, {{ book[4] }}) — {{ book[5] }} руб.</li>
+    {% endfor %}
+    </ul>
+    <p>
+        <a href="{{ url_for('login') }}">Вход</a> |
+        <a href="{{ url_for('register') }}">Регистрация</a>
+    </p>
+</body>
+</html>
