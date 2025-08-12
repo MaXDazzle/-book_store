@@ -8,26 +8,61 @@
     <h1>Книжный магазин</h1>
 
     {% if 'username' in session %}
-        <p>Привет, {{ session.username }} | <a href="{{ url_for('logout') }}">Выйти</a></p>
-        {% if session.role == 'admin' %}
-            <p><a href="{{ url_for('admin') }}">Админ-панель</a></p>
-        {% endif %}
+        <p>Привет, {{ session['username'] }}! <a href="{{ url_for('logout') }}">Выйти</a></p>
     {% else %}
-        <p><a href="{{ url_for('login') }}">Войти</a> | <a href="{{ url_for('register') }}">Регистрация</a></p>
+        <p><a href="{{ url_for('login') }}">Вход</a> | <a href="{{ url_for('register') }}">Регистрация</a></p>
     {% endif %}
 
-    <h3>Сортировка:</h3>
-    <a href="{{ url_for('index', sort='author') }}">По автору</a> |
-    <a href="{{ url_for('index', sort='category') }}">По категории</a> |
-    <a href="{{ url_for('index', sort='year') }}">По году</a>
+    <h3>Сортировать по:</h3>
+    <a href="{{ url_for('index', sort='author') }}">Автор</a> |
+    <a href="{{ url_for('index', sort='category') }}">Категория</a> |
+    <a href="{{ url_for('index', sort='year') }}">Год</a>
+    <br><br>
 
-    <ul>
-    {% for book in books %}
-        <li>
-            <a href="{{ url_for('book', book_id=book[0]) }}">{{ book[1] }}</a> — {{ book[2] }} ({{ book[4] }})
-            — {{ book[5] }} руб. | {{ book[6] }}
-        </li>
-    {% endfor %}
-    </ul>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Категория</th>
+            <th>Год</th>
+            <th>Цена</th>
+            <th>Статус</th>
+            <th>Действие</th>
+        </tr>
+        {% for book in books %}
+        <tr>
+            <td><a href="{{ url_for('book', book_id=book[0]) }}">{{ book[1] }}</a></td>
+            <td>{{ book[2] }}</td>
+            <td>{{ book[3] }}</td>
+            <td>{{ book[4] }}</td>
+            <td>{{ book[5] }}</td>
+            <td>{{ book[6] }}</td>
+            <td>
+                {% if 'username' in session %}
+                    <form action="{{ url_for('order', book_id=book[0]) }}" method="post">
+                        <select name="type" onchange="togglePeriod(this, {{ book[0] }})">
+                            <option value="buy">Купить</option>
+                            <option value="rent">Аренда</option>
+                        </select>
+                        <select name="period" id="period-{{ book[0] }}" style="display:none;">
+                            <option value="14">2 недели</option>
+                            <option value="30">1 месяц</option>
+                            <option value="90">3 месяца</option>
+                        </select>
+                        <button type="submit">Оформить</button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Войдите</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+    function togglePeriod(select, id) {
+        document.getElementById('period-' + id).style.display = select.value === 'rent' ? 'inline' : 'none';
+    }
+    </script>
 </body>
 </html>
