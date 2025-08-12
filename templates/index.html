@@ -1,22 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Книжный магазин</title>
 </head>
 <body>
-    <h1>Список книг</h1>
-    {% if session.username %}
-        <p>Вы вошли как {{ session.username }} ({{ session.role }})</p>
+    <h1>Книжный магазин</h1>
+
+    {% if 'username' in session %}
+        <p>Привет, {{ session.username }} | <a href="{{ url_for('logout') }}">Выйти</a></p>
+        {% if session.role == 'admin' %}
+            <p><a href="{{ url_for('admin') }}">Админ-панель</a></p>
+        {% endif %}
+    {% else %}
+        <p><a href="{{ url_for('login') }}">Войти</a> | <a href="{{ url_for('register') }}">Регистрация</a></p>
     {% endif %}
+
+    <h3>Сортировка:</h3>
+    <a href="{{ url_for('index', sort='author') }}">По автору</a> |
+    <a href="{{ url_for('index', sort='category') }}">По категории</a> |
+    <a href="{{ url_for('index', sort='year') }}">По году</a>
+
     <ul>
     {% for book in books %}
-        <li>{{ book[1] }} — {{ book[2] }} ({{ book[3] }}, {{ book[4] }}) — {{ book[5] }} руб.</li>
+        <li>
+            <a href="{{ url_for('book', book_id=book[0]) }}">{{ book[1] }}</a> — {{ book[2] }} ({{ book[4] }})
+            — {{ book[5] }} руб. | {{ book[6] }}
+        </li>
     {% endfor %}
     </ul>
-    <p>
-        <a href="{{ url_for('login') }}">Вход</a> |
-        <a href="{{ url_for('register') }}">Регистрация</a>
-    </p>
 </body>
 </html>
